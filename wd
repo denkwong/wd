@@ -1,0 +1,33 @@
+#!/usr/bin/env python
+
+import argparse
+import enchant
+import itertools
+
+
+def main(letters, min_length, max_length, show_chars):
+    d = enchant.Dict("en_US")
+    words = list()
+
+    while min_length <= max_length:
+        temp_words = set()
+        for i in itertools.permutations(letters, min_length):
+            word = "".join(i)
+            if d.check(word):
+                temp_words.update([word])
+        words.extend(sorted(temp_words))
+        min_length += 1
+
+    for word in words:
+        print(word[0:show_chars])
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Word Descrambler")
+    parser.add_argument("letters", type=str, help="Letters to descramble")
+    parser.add_argument("--min", "-m", type=int, default=3, help="Minimum length of word")
+    parser.add_argument("--max", "-x", type=int, default=10, help="Maximum length of word")
+    parser.add_argument("--show", "-s", type=int, default=None, help="Show number of characters")
+    args = parser.parse_args()
+    main(args.letters, args.min, args.max, args.show)
+
